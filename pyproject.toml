@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "hundred-x"
 version = "0.1.29"
-description = "# hundred_x"
+description = "# rysk_v2"
 authors = ["8baller <8ball030@gmail.com>"]
 readme = "README.md"
-packages = [{include = "hundred_x"}]
+packages = [{include = "rysk_v2"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<=3.13"

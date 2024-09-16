@@ -1,5 +1,5 @@
 """
-Exceptions for the hundred_x package.
+Exceptions for the rysk_v2 package.
 """
 
 

@@ -1,19 +1,19 @@
 """
-Async client for the HundredX API
+Async client for the RyskV2 API
 """
 
 from typing import Any
 
 import httpx
 
-from hundred_x.client import HundredXClient
-from hundred_x.exceptions import ClientError
-from hundred_x.utils import from_message_to_payload
+from rysk_v2.client import RyskV2Client
+from rysk_v2.exceptions import ClientError
+from rysk_v2.utils import from_message_to_payload
 
 
-class AsyncHundredXClient(HundredXClient):
+class AsyncRyskV2Client(RyskV2Client):
     """
-    Asynchronous client for the HundredX API.
+    Asynchronous client for the RyskV2 API.
     """
 
     async def get_symbol(self, symbol: str = None):
