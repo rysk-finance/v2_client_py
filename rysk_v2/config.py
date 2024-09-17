@@ -12,7 +12,8 @@ REFERRAL_CODE = os.environ.get("RYSK_V2_REFERRAL_CODE", "macchiadisugo")
 
 @dataclass(frozen=True)
 class EnvConfig:
-    base_domain: str
+    api_url: str
+    stream_url: str
     rpc_url: str
     chain_id: int
     core_collateral: str
@@ -23,7 +24,7 @@ class EnvConfig:
         return all(
             [
                 self.api_url,
-                self.base_domain,
+                self.stream_url,
                 self.rpc_url,
                 self.chain_id,
                 self.core_collateral,
@@ -33,25 +34,18 @@ class EnvConfig:
         )
 
     @property
-    def api_url(self):
-        return f"https://api.{self.base_domain}"
-
-    @property
-    def stream_url(self):
-        return f"wss://stream.{self.base_domain}"
-
-    @property
     def eip712_domain_name(self):
         """
         return the correct eip712 domain name for signing
         """
-        return self.base_domain.split('.')[-2]
+        return self.api_url.split('.')[-2]
 
 
 CONFIG = {
     SupportedChains.ARBITRUM: {
         Environment.PROD: EnvConfig(
-            "arbitrum.rysk.finance",
+            "https://api-arbitrum.prod.rysk.finance",
+            "wss://stream-arbitrum.prod.rysk.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://arb1.arbitrum.io/rpc"),
             42161,
             "0x0000000000000000000000000000000000000000",
@@ -59,7 +53,8 @@ CONFIG = {
             "0x0000000000000000000000000000000000000000",
         ),
         Environment.TESTNET: EnvConfig(
-            "arbitrum-sepolia.rysk.finance",
+            "https://api-arbitrum.staging.rysk.finance",
+            "wss://stream-arbitrum.staging.rysk.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://sepolia-rollup.arbitrum.io/rpc"),
             421614,
             "0x0000000000000000000000000000000000000000",
@@ -69,7 +64,8 @@ CONFIG = {
     },
     SupportedChains.BLAST: {
         Environment.PROD: EnvConfig(
-            "100x.finance",
+            "https://api.100x.finance",
+            "wss://stream.100x.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://rpc.blast.io"),
             81457,
             "0x4300000000000000000000000000000000000003",
@@ -77,7 +73,8 @@ CONFIG = {
             "0x691a5fc3a81a144e36c6C4fBCa1fC82843c80d0d",
         ),
         Environment.TESTNET: EnvConfig(
-            "staging.100x.finance",
+            "https://api.staging.100x.finance",
+            "wss://stream.staging.100x.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://sepolia.blast.io"),
             168587773,
             "0x79A59c326C715AC2d31C169C85d1232319E341ce",
@@ -87,7 +84,8 @@ CONFIG = {
     },
     SupportedChains.CUSTOM: {
         Environment.DEVNET: EnvConfig(
-            os.environ.get("RYSK_V2_BASE_DOMAIN"),
+            os.environ.get("RYSK_V2_API_URL"),
+            os.environ.get("RYSK_V2_STREAM_URL"),
             os.environ.get("RYSK_V2_RPC_URL"),
             int(os.environ.get("RYSK_V2_CHAIN_ID", 0)),
             os.environ.get("RYSK_V2_CORE_COLLATERAL"),
