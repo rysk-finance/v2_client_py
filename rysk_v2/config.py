@@ -44,8 +44,8 @@ class EnvConfig:
 CONFIG = {
     SupportedChains.ARBITRUM: {
         Environment.PROD: EnvConfig(
-            "https://api-arbitrum.prod.rysk.finance",
-            "wss://stream-arbitrum.prod.rysk.finance",
+            "https://arbitrum-api.prod.rysk.finance",
+            "wss://arbitrum-stream.prod.rysk.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://arb1.arbitrum.io/rpc"),
             42161,
             "0x0000000000000000000000000000000000000000",
@@ -53,8 +53,8 @@ CONFIG = {
             "0x0000000000000000000000000000000000000000",
         ),
         Environment.TESTNET: EnvConfig(
-            "https://api-arbitrum.staging.rysk.finance",
-            "wss://stream-arbitrum.staging.rysk.finance",
+            "https://arbitrum-api.staging.rysk.finance",
+            "wss://arbitrum-stream.staging.rysk.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://sepolia-rollup.arbitrum.io/rpc"),
             421614,
             "0xb8bE1401E65dC08Bfb8f832Fc1A27a16CA821B05",
