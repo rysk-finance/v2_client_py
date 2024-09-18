@@ -57,9 +57,9 @@ CONFIG = {
             "wss://stream-arbitrum.staging.rysk.finance",
             os.environ.get("RYSK_V2_RPC_URL", "https://sepolia-rollup.arbitrum.io/rpc"),
             421614,
-            "0x0000000000000000000000000000000000000000",
-            "0x0000000000000000000000000000000000000000",
-            "0x0000000000000000000000000000000000000000",
+            "0xb8bE1401E65dC08Bfb8f832Fc1A27a16CA821B05",
+            "0x71728FDDF90233cc35D61bec7858d7c42A310ACe",
+            "0x27809a3Bd3cf44d855f1BE668bFD16D34bcE157C",
         ),
     },
     SupportedChains.BLAST: {
