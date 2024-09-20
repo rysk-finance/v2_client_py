@@ -1,28 +1,29 @@
-# 100x
+# Rysk v2
 
-A Python client for the 100x API, providing a convenient wrapper to interact with the API.
+A Python client for the Rysk v2 API, providing a convenient wrapper to interact with the API.
 
 ## Installation
 
 ```shell
-pip install hundred-x
-````
+pip install rysk_v2
+```
 
 ## Usage
 
 ```python
 
-from hundred_x.client import HundredXClient
-from hundred_x.enums import Environment
+from rysk_v2.client import RyskV2Client
+from rysk_v2.enums import Environment
 
-client = HundredXClient(
-    private_key="your_private_key",
+client = RyskV2Client(
+    chain=SupportedChains.ARBITRUM,
     environment=Environment.PROD
+    private_key="your_private_key",
 )
 
 # List available products
 products = client.list_products()
-print(products) 
+print(products)
 
 # Get the current price of a symbol
 price = client.get_product("ethperp")
@@ -54,9 +55,8 @@ For asynchronous usage, refer to 'examples/async_client.py'.
 
 1. Clone the repository:
 
-
 ```shell
-git clone https://github.com/8ball030/hundred_x.git &&cd hundred_x
+git clone https://github.com/rysk-finance/v2_client_py.git && cd v2_client_py
 ```
 
 2. Create a development environment:
@@ -93,6 +93,7 @@ docker buildx build --platform linux/amd64 . -t test
 # Run tests in Docker
 docker run -v (pwd):/app -it test
 ```
+
 ### Contributing
 
 ### Contributors
