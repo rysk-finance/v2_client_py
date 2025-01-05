@@ -63,7 +63,7 @@ class CitrexClient:
 
     def __init__(
         self,
-        chain: SupportedChains = SupportedChains.BLAST,
+        chain: SupportedChains = SupportedChains.SEI,
         env: Environment = Environment.TESTNET,
         private_key: str = None,
         subaccount_id: int = 0,
