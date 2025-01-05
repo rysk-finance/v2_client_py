@@ -32,7 +32,7 @@ class Client:
         Set up the Client class tests.
         """
         self.client = CitrexClient(
-            chain=SupportedChains.BLAST, env=self.environment, private_key=TEST_PRIVATE_KEY, subaccount_id=1
+            chain=SupportedChains.SEI, env=self.environment, private_key=TEST_PRIVATE_KEY, subaccount_id=1
         )
 
     def tearDown(self):

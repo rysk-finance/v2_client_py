@@ -17,7 +17,7 @@ async def main():
     if not key:
         raise ValueError("citrex_PRIVATE_KEY environment variable is not set.")
 
-    client = AsyncCitrexClient(SupportedChains.BLAST, Environment.TESTNET, key, subaccount_id=subaccount_id)
+    client = AsyncCitrexClient(SupportedChains.SEI, Environment.TESTNET, key, subaccount_id=subaccount_id)
 
     print(f"Using Wallet: {client.public_key}")
     print(f"Using Subaccount ID: {client.subaccount_id}")

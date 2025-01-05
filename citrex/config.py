@@ -44,8 +44,8 @@ class EnvConfig:
 CONFIG = {
     SupportedChains.SEI: {
         Environment.PROD: EnvConfig(
-            "https://api.citrex.markets/v1",
-            "wss://api.citrex.markets/v1/ws/operate",
+            "https://api.citrex.markets",
+            "wss://api.citrex.markets",
             os.environ.get("citrex_RPC_URL", "https://evm-rpc.sei-apis.com"),
             1329,
             "0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1",
@@ -53,8 +53,8 @@ CONFIG = {
             "0x993543DC8BdFCba9fc7355d822108eF49dB6b9F9",
         ),
         Environment.TESTNET: EnvConfig(
-            "https://api.staging.citrex.markets/v1",
-            "wss://api.staging.citrex.markets/v1/ws/operate",
+            "https://api.staging.citrex.markets",
+            "wss://api.staging.citrex.markets",
             os.environ.get("citrex_RPC_URL", "https://evm-rpc-testnet.sei-apis.com"),
             1328,
             "0x79A59c326C715AC2d31C169C85d1232319E341ce",
