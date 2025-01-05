@@ -3,7 +3,7 @@ Default test data for the tests.
 
 """
 
-from hundred_x.enums import OrderSide, OrderType, TimeInForce
+from citrex.enums import OrderSide, OrderType, TimeInForce
 
 DEFAULT_SYMBOL = "ethperp"
 TEST_PRIVATE_KEY = "0x8f58e47491ac5fe6897216208fe1fed316d6ee89de6c901bfc521c2178ebe6dd"

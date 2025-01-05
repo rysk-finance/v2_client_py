@@ -2,21 +2,21 @@ import asyncio
 import os
 from pprint import pprint
 
-from hundred_x.async_client import AsyncHundredXClient
-from hundred_x.enums import Environment, OrderSide, OrderType, TimeInForce
+from citrex.async_client import AsyncCitrexClient
+from citrex.enums import Environment, OrderSide, OrderType, SupportedChains, TimeInForce
 
 
 async def main():
     """
     Fetch all positions then close them all.
     """
-    key = os.getenv("HUNDRED_X_PRIVATE_KEY")
+    key = os.getenv("citrex_PRIVATE_KEY")
     subaccount_id = 0
 
     if not key:
-        raise ValueError("HUNDRED_X_PRIVATE_KEY environment variable is not set.")
+        raise ValueError("citrex_PRIVATE_KEY environment variable is not set.")
 
-    client = AsyncHundredXClient(Environment.PROD, key, subaccount_id=subaccount_id)
+    client = AsyncCitrexClient(SupportedChains.SEI, Environment.PROD, key, subaccount_id=subaccount_id)
 
     print(f"Using Wallet: {client.public_key}")
     print(f"Using Subaccount ID: {client.subaccount_id}")

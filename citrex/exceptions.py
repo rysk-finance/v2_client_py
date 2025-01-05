@@ -1,5 +1,5 @@
 """
-Exceptions for the hundred_x package.
+Exceptions for the citrex package.
 """
 
 

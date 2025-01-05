@@ -1,13 +1,14 @@
 """
-Utils module for hundred_x package.
+Utils module for citrex package.
 """
 
+from dataclasses import dataclass
 import json
 import os
 from pathlib import Path
 from typing import Any, Dict
 
-from hundred_x.enums import Environment
+from citrex.enums import Environment
 
 INSTALL_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_ENCODING = "utf-8"
@@ -16,10 +17,6 @@ STRING_KEYS = [
     "price",
     "quantity",
 ]
-
-
-def get_base_url(envirnment: Environment):
-    """Map the environment to the corresponding base URL."""
 
 
 def get_abi(contract_name: str):

@@ -1,19 +1,19 @@
 """
-Async client for the HundredX API
+Async client for the Citrex API
 """
 
 from typing import Any
 
 import httpx
 
-from hundred_x.client import HundredXClient
-from hundred_x.exceptions import ClientError
-from hundred_x.utils import from_message_to_payload
+from citrex.client import CitrexClient
+from citrex.exceptions import ClientError
+from citrex.utils import from_message_to_payload
 
 
-class AsyncHundredXClient(HundredXClient):
+class AsyncCitrexClient(CitrexClient):
     """
-    Asynchronous client for the HundredX API.
+    Asynchronous client for the Citrex API.
     """
 
     async def get_symbol(self, symbol: str = None):

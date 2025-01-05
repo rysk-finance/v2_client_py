@@ -1,5 +1,5 @@
 """
-Eip structs for the hundred_x project
+Eip structs for the citrex project
 
 """
 

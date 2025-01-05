@@ -14,11 +14,11 @@ from eth_account.messages import encode_structured_data
 from web3 import Web3
 from web3.exceptions import TransactionNotFound
 
-from hundred_x.constants import APIS, CONTRACTS, LOGIN_MESSAGE, REFERRAL_CODE, RPC_URLS
-from hundred_x.eip_712 import CancelOrder, CancelOrders, LoginMessage, Order, Referral, Withdraw
-from hundred_x.enums import ApiType, Environment, OrderSide, OrderType, TimeInForce
-from hundred_x.exceptions import ClientError, UserInputValidationError
-from hundred_x.utils import from_message_to_payload, get_abi
+from citrex.config import CONFIG, REFERRAL_CODE
+from citrex.eip_712 import CancelOrder, CancelOrders, LoginMessage, Order, Referral, Withdraw
+from citrex.enums import Environment, OrderSide, OrderType, SupportedChains, TimeInForce
+from citrex.exceptions import ClientError, UserInputValidationError
+from citrex.utils import from_message_to_payload, get_abi
 
 headers = {
     "Accept": "application/json",
@@ -30,7 +30,7 @@ PROTOCOL_ABI = get_abi("protocol")
 ERC_20_ABI = get_abi("erc20")
 
 
-class HundredXClient:
+class CitrexClient:
     private_functions: List[str] = [
         "/v1/withdraw",
         "/v1/order",
@@ -44,7 +44,7 @@ class HundredXClient:
         "/v1/session/login",
         "/v1/referral/add-referee",
         "/v1/session/logout",
-        "/v1/account-health"
+        "/v1/account-health",
     ]
     public_functions: List[str] = [
         "/v1/products",
@@ -63,6 +63,7 @@ class HundredXClient:
 
     def __init__(
         self,
+        chain: SupportedChains = SupportedChains.SEI,
         env: Environment = Environment.TESTNET,
         private_key: str = None,
         subaccount_id: int = 0,
@@ -70,28 +71,27 @@ class HundredXClient:
         """
         Initialize the client with the given environment.
         """
-        self.env = env
-        self.rest_url = APIS[env][ApiType.REST]
-        self.websocket_url = APIS[env][ApiType.WEBSOCKET]
-        if any([not self.rest_url, not self.websocket_url]):
-            raise UserInputValidationError(
-                f"Invalid environment: {env} Missing REST or WEBSOCKET URL for the environment."
-            )
+        self.config = CONFIG.get(chain).get(env)
+        if self.config is None or not self.config.check():
+            raise AttributeError()
 
-        self.session_cookie = {}
-        self.web3 = Web3(Web3.HTTPProvider(RPC_URLS[env]))
+        self.api_url = self.config.api_url
+        self.stream_url = self.config.stream_url
+        self.web3 = Web3(Web3.HTTPProvider(self.config.rpc_url))
         self.domain = make_domain(
-            name="100x",
+            name=self.config.eip712_domain_name,
             version="0.0.0",
-            chainId=CONTRACTS[env]["CHAIN_ID"],
-            verifyingContract=CONTRACTS[env]["VERIFYING_CONTRACT"],
+            chainId=self.config.chain_id,
+            verifyingContract=self.config.verifying_contract,
         )
+        self.session_cookie = {}
+
         if private_key:
             self.wallet = eth_account.Account.from_key(private_key)
             self.public_key = self.wallet.address
             if not (0 <= subaccount_id <= 255):
                 raise UserInputValidationError(
-                    f"Subaccount ID must be between 0 and 255. It is instead: {subaccount_id}"
+                    f"Invalid 'subaccount_id'={subaccount_id}. Expected 0 <= subaccount_id <= 255."
                 )
             self.subaccount_id = subaccount_id
             self.login()
@@ -99,6 +99,8 @@ class HundredXClient:
                 self.set_referral_code()
             except Exception:  # pylint: disable=broad-except
                 pass
+
+        print(f"Citrex client initialised with chain: {chain}, env: {env}")
 
     def _validate_function(
         self,
@@ -157,16 +159,16 @@ class HundredXClient:
         payload = from_message_to_payload(message)
         response = self.http_client.request(
             method,
-            self.rest_url + endpoint,
+            self.api_url + endpoint,
             params=params,
             headers={} if not authenticated else self.authenticated_headers,
             json=payload,
         )
         if response.status_code != 200:
-            raise Exception(f"Failed to send message: {response.text} {response.status_code} {self.rest_url} {payload}")
+            raise Exception(f"Failed to send message: {response.text} {response.status_code} {self.api_url} {payload}")
         return response.json()
 
-    def withdraw(self, subaccount_id: int, quantity: int, asset: str = "USDB"):
+    def withdraw(self, subaccount_id: int, quantity: int, asset: str = "CORE_COLLATERAL"):
         """
         Generate a withdrawal message and sign it.
         """
@@ -284,12 +286,12 @@ class HundredXClient:
     def create_authenticated_session_with_service(self):
         login_payload = self.generate_and_sign_message(
             LoginMessage,
-            message=LOGIN_MESSAGE,
+            message=f"I would like to log into {self.config.eip712_domain_name} finance",
             timestamp=self._current_timestamp(),
             **self.get_shared_params(),
         )
         response = requests.post(
-            self.rest_url + "/v1/session/login",
+            self.api_url + "/v1/session/login",
             json=login_payload,
         ).json()
         self.session_cookie = response.get("value")
@@ -299,13 +301,13 @@ class HundredXClient:
         """
         Get a list of all available products.
         """
-        return requests.get(self.rest_url + "/v1/products").json()
+        return requests.get(self.api_url + "/v1/products").json()
 
     def get_product(self, product_symbol: str) -> Any:
         """
         Get the details of a specific product.
         """
-        return requests.get(self.rest_url + f"/v1/products/{product_symbol}").json()
+        return requests.get(self.api_url + f"/v1/products/{product_symbol}").json()
 
     def get_account_health(self) -> Any:
         """
@@ -332,7 +334,7 @@ class HundredXClient:
         """
         Get the server time.
         """
-        return requests.get(self.rest_url + "/v1/time").json()
+        return requests.get(self.api_url + "/v1/time").json()
 
     def get_candlestick(self, symbol: str, **kwargs) -> Any:
         """
@@ -344,7 +346,7 @@ class HundredXClient:
             if var is not None:
                 params[arg] = var
         return requests.get(
-            self.rest_url + "/v1/uiKlines",
+            self.api_url + "/v1/uiKlines",
             params=params,
         ).json()
 
@@ -393,7 +395,7 @@ class HundredXClient:
         """
         Get the current session status.
         """
-        return requests.get(self.rest_url + "/v1/session/status", headers=self.authenticated_headers).json()
+        return requests.get(self.api_url + "/v1/session/status", headers=self.authenticated_headers).json()
 
     @property
     def authenticated_headers(self):
@@ -405,7 +407,7 @@ class HundredXClient:
         """
         Logout from the exchange.
         """
-        return requests.get(self.rest_url + "/v1/session/logout", headers=self.authenticated_headers).json()
+        return requests.get(self.api_url + "/v1/session/logout", headers=self.authenticated_headers).json()
 
     def get_spot_balances(self):
         """
@@ -432,7 +434,7 @@ class HundredXClient:
         Get the approved signers.
         """
         return requests.get(
-            self.rest_url + "/v1/approved-signers",
+            self.api_url + "/v1/approved-signers",
             headers=self.authenticated_headers,
             params={"account": self.public_key, "subAccountId": self.subaccount_id},
         ).json()
@@ -461,13 +463,13 @@ class HundredXClient:
             params["symbol"] = symbol
 
         response = requests.get(
-            self.rest_url + "/v1/orders",
+            self.api_url + "/v1/orders",
             headers=self.authenticated_headers,
             params=params,
         )
         if response.status_code != 200:
             raise Exception(
-                f"Failed to get orders: {response.text} {response.status_code} " + f"{self.rest_url} {params}"
+                f"Failed to get orders: {response.text} {response.status_code} " + f"{self.api_url} {params}"
             )
         return response.json()
 
@@ -482,7 +484,7 @@ class HundredXClient:
         )
         try:
             requests.post(
-                self.rest_url + "/v1/referral/add-referee",
+                self.api_url + "/v1/referral/add-referee",
                 headers=self.authenticated_headers,
                 json=referral_payload,
             )
@@ -491,7 +493,7 @@ class HundredXClient:
                 return
             raise e
 
-    def deposit(self, subaccount_id: int, quantity: int, asset: str = "USDB"):
+    def deposit(self, subaccount_id: int, quantity: int, asset: str = "CORE_COLLATERAL"):
         """
         Deposit an asset.
         """
@@ -548,16 +550,21 @@ class HundredXClient:
 
     def get_contract_address(self, name: str):
         """
-        Get the contract address for a specific asset.
+        Get the contract address for a specific contract.
         """
-        return self.web3.to_checksum_address(CONTRACTS[self.env][name])
+        values = {
+            "CORE_COLLATERAL": self.config.core_collateral,
+            "PROTOCOL": self.config.protocol,
+            "VERIFYING_CONTRACT": self.config.verifying_contract,
+        }
+        return self.web3.to_checksum_address(values.get(name))
 
     def get_contract(self, name: str):
         """
         Get the contract for a specific asset.
         """
         abis = {
-            "USDB": ERC_20_ABI,
+            "CORE_COLLATERAL": ERC_20_ABI,
             "PROTOCOL": PROTOCOL_ABI,
         }
         return self.web3.eth.contract(

@@ -7,9 +7,9 @@ from unittest import TestCase
 
 import pytest
 
-from hundred_x.client import HundredXClient
-from hundred_x.eip_712 import Order, Withdraw
-from hundred_x.enums import Environment
+from citrex.client import CitrexClient
+from citrex.eip_712 import Order, Withdraw
+from citrex.enums import Environment, SupportedChains
 from tests.test_data import (
     CANCEL_AND_REPLACE_ORDER,
     DEFAULT_SYMBOL,
@@ -25,13 +25,15 @@ class Client:
     Base class for the Client class tests.
     """
 
-    environment: Environment = Environment.DEVNET
+    environment: Environment = Environment.TESTNET
 
     def setUp(self):
         """
         Set up the Client class tests.
         """
-        self.client = HundredXClient(env=self.environment, private_key=TEST_PRIVATE_KEY, subaccount_id=1)
+        self.client = CitrexClient(
+            chain=SupportedChains.SEI, env=self.environment, private_key=TEST_PRIVATE_KEY, subaccount_id=1
+        )
 
     def tearDown(self):
         cancel_order = self.client.cancel_all_orders(subaccount_id=1, product_id=1002)
@@ -237,12 +239,12 @@ class Client:
             message_class=Withdraw,
             quantity=int(100 * 10**18),
             nonce=self.client._current_timestamp(),
-            **self.client.get_shared_params(subaccount_id=1, asset="USDB"),
+            **self.client.get_shared_params(subaccount_id=1, asset="CORE_COLLATERAL"),
         )
 
         assert withdrawal_message["signature"] == signature
 
-    @pytest.mark.skip(reason="This test is not working to due none implementaiton of rounding.")
+    @pytest.mark.skip(reason="This test is not working due to none implementaiton of rounding.")
     def test_order_decimal_number_quantity(
         self,
     ):
@@ -255,7 +257,7 @@ class Client:
         )
         assert order is not None
 
-    @pytest.mark.skip(reason="This test is not working to due none implementaiton of rounding.")
+    @pytest.mark.skip(reason="This test is not working due to none implementaiton of rounding.")
     def test_order_decimal_number_price(
         self,
     ):
@@ -302,7 +304,7 @@ class Client:
             timeInForce=TEST_ORDER["time_in_force"].value,
             **self.client.get_shared_params(
                 subaccount_id=TEST_ORDER["subaccount_id"],
-                asset="USDB",
+                asset="CORE_COLLATERAL",
             ),
         )
 
@@ -369,13 +371,13 @@ class TestStagingClient(Client, TestCase):
 
     environment: Environment = Environment.TESTNET
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_deposit(
         self,
     ):
         super().test_deposit()
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_withdraw(self):
         return super().test_withdraw()
 
@@ -396,13 +398,13 @@ class TestProdClient(Client, TestCase):
 
     environment: Environment = Environment.PROD
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_deposit(
         self,
     ):
         super().test_deposit()
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_withdraw(self):
         return super().test_withdraw()
 
@@ -415,21 +417,21 @@ class TestProdClient(Client, TestCase):
             signature="0x38c34757dd73104595871b471143d4ce0d95eec7d020e4950830921cb0eec0427ef284dfc6fc5c65b2319179a73d16f84f5d6a1d2e0d1a301caa665112d440601c"  # noqa: E501
         )
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_cancel_order(
         self,
     ):
         return super().test_cancel_order()
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_cancel_orders(self):
         return super().test_cancel_orders()
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_cancel_and_replace_order(self):
         return super().test_cancel_and_replace_order()
 
-    @pytest.mark.skip(reason="This test is not working to due insufficient balances")
+    @pytest.mark.skip(reason="This test is not working due to insufficient balances")
     def test_order(
         self,
     ):
