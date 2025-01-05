@@ -1,21 +1,21 @@
-# Rysk v2
+# Citrex
 
-A Python client for the Rysk v2 API, providing a convenient wrapper to interact with the API.
+A Python client for the Citrex API, providing a convenient wrapper to interact with the API.
 
 ## Installation
 
 ```shell
-pip install rysk_v2
+pip install citrex
 ```
 
 ## Usage
 
 ```python
 
-from rysk_v2.client import RyskV2Client
-from rysk_v2.enums import Environment
+from citrex.client import CitrexClient
+from citrex.enums import Environment
 
-client = RyskV2Client(
+client = CitrexClient(
     chain=SupportedChains.ARBITRUM,
     environment=Environment.PROD
     private_key="your_private_key",

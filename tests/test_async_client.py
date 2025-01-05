@@ -6,15 +6,15 @@ import pytest
 import respx
 from httpx import Response
 
-from rysk_v2.async_client import AsyncRyskV2Client
-from rysk_v2.enums import Environment
+from citrex.async_client import AsyncCitrexClient
+from citrex.enums import Environment
 from tests.test_data import TEST_ORDER_ID, TEST_PRICE, TEST_PRIVATE_KEY, TEST_SYMBOL
 
 
 @pytest.fixture
 def client():
     env = Environment.PROD
-    return AsyncRyskV2Client(env, TEST_PRIVATE_KEY)
+    return AsyncCitrexClient(env, TEST_PRIVATE_KEY)
 
 
 @pytest.mark.asyncio

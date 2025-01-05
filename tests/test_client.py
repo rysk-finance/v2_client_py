@@ -7,9 +7,9 @@ from unittest import TestCase
 
 import pytest
 
-from rysk_v2.client import RyskV2Client
-from rysk_v2.eip_712 import Order, Withdraw
-from rysk_v2.enums import Environment, SupportedChains
+from citrex.client import CitrexClient
+from citrex.eip_712 import Order, Withdraw
+from citrex.enums import Environment, SupportedChains
 from tests.test_data import (
     CANCEL_AND_REPLACE_ORDER,
     DEFAULT_SYMBOL,
@@ -31,7 +31,7 @@ class Client:
         """
         Set up the Client class tests.
         """
-        self.client = RyskV2Client(
+        self.client = CitrexClient(
             chain=SupportedChains.BLAST, env=self.environment, private_key=TEST_PRIVATE_KEY, subaccount_id=1
         )
 

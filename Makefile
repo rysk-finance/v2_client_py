@@ -6,11 +6,11 @@ install:
 	poetry install
 
 fmt:
-	poetry run black tests rysk_v2 examples
-	poetry run isort tests rysk_v2 examples
+	poetry run black tests citrex examples
+	poetry run isort tests citrex examples
 
 lint:
-	poetry run flake8 tests rysk_v2 examples
+	poetry run flake8 tests citrex examples
 
 all: fmt lint tests
 

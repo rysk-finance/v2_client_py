@@ -1,5 +1,5 @@
 """
-Eip structs for the rysk_v2 project
+Eip structs for the citrex project
 
 """
 

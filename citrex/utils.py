@@ -1,5 +1,5 @@
 """
-Utils module for rysk_v2 package.
+Utils module for citrex package.
 """
 
 from dataclasses import dataclass
@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict
 
-from rysk_v2.enums import Environment
+from citrex.enums import Environment
 
 INSTALL_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_ENCODING = "utf-8"
@@ -17,6 +17,7 @@ STRING_KEYS = [
     "price",
     "quantity",
 ]
+
 
 def get_abi(contract_name: str):
     """Get the ABI of the contract."""

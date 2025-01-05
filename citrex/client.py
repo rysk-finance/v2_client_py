@@ -14,11 +14,11 @@ from eth_account.messages import encode_structured_data
 from web3 import Web3
 from web3.exceptions import TransactionNotFound
 
-from rysk_v2.config import CONFIG, REFERRAL_CODE
-from rysk_v2.eip_712 import CancelOrder, CancelOrders, LoginMessage, Order, Referral, Withdraw
-from rysk_v2.enums import Environment, OrderSide, OrderType, SupportedChains, TimeInForce
-from rysk_v2.exceptions import ClientError, UserInputValidationError
-from rysk_v2.utils import from_message_to_payload, get_abi
+from citrex.config import CONFIG, REFERRAL_CODE
+from citrex.eip_712 import CancelOrder, CancelOrders, LoginMessage, Order, Referral, Withdraw
+from citrex.enums import Environment, OrderSide, OrderType, SupportedChains, TimeInForce
+from citrex.exceptions import ClientError, UserInputValidationError
+from citrex.utils import from_message_to_payload, get_abi
 
 headers = {
     "Accept": "application/json",
@@ -30,7 +30,7 @@ PROTOCOL_ABI = get_abi("protocol")
 ERC_20_ABI = get_abi("erc20")
 
 
-class RyskV2Client:
+class CitrexClient:
     private_functions: List[str] = [
         "/v1/withdraw",
         "/v1/order",
@@ -100,8 +100,7 @@ class RyskV2Client:
             except Exception:  # pylint: disable=broad-except
                 pass
 
-        print(f"Rysk v2 client initialised with chain: {chain}, env: {env}")
-
+        print(f"Citrex client initialised with chain: {chain}, env: {env}")
 
     def _validate_function(
         self,

@@ -1,5 +1,5 @@
 """
-Exceptions for the rysk_v2 package.
+Exceptions for the citrex package.
 """
 
 

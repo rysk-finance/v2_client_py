@@ -2,21 +2,21 @@ import asyncio
 import os
 from pprint import pprint
 
-from rysk_v2.async_client import AsyncRyskV2Client
-from rysk_v2.enums import Environment, OrderSide, OrderType, SupportedChains, TimeInForce
+from citrex.async_client import AsyncCitrexClient
+from citrex.enums import Environment, OrderSide, OrderType, SupportedChains, TimeInForce
 
 
 async def main():
     """
     Fetch all positions then close them all.
     """
-    key = os.getenv("RYSK_V2_PRIVATE_KEY")
+    key = os.getenv("citrex_PRIVATE_KEY")
     subaccount_id = 0
 
     if not key:
-        raise ValueError("RYSK_V2_PRIVATE_KEY environment variable is not set.")
+        raise ValueError("citrex_PRIVATE_KEY environment variable is not set.")
 
-    client = AsyncRyskV2Client(SupportedChains.BLAST, Environment.PROD, key, subaccount_id=subaccount_id)
+    client = AsyncCitrexClient(SupportedChains.BLAST, Environment.PROD, key, subaccount_id=subaccount_id)
 
     print(f"Using Wallet: {client.public_key}")
     print(f"Using Subaccount ID: {client.subaccount_id}")

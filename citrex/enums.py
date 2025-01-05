@@ -1,5 +1,5 @@
 """
-Enmum for the rysk_v2 package
+Enmum for the citrex package
 """
 
 from enum import Enum
@@ -41,6 +41,7 @@ class SupportedChains(Enum):
 
     ARBITRUM = "ARBITRUM"
     BLAST = "BLAST"
+    SEI = "SEI"
     CUSTOM = "CUSTOM"
 
 
